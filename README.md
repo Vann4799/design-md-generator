@@ -1,7 +1,7 @@
 # DESIGN.md Generator Skill
 
 Write the file that stops an agent from re-deciding the visual system on every
-page. Works with Qoder CLI, Claude Code, Codex, OpenCode, and Hermes Agent.
+page. Works with Claude Code, Codex, OpenCode, Hermes Agent, and Qoder CLI.
 
 The skill extracts a design direction through a short interview (or from a brand
 guide or a reference site you point at), writes a locked `DESIGN.md` — dials,
@@ -16,19 +16,37 @@ keeps it.
 
 ## Install
 
-The skill lives in `skills/design-md-generator/`. Point your agent at that folder:
+The skill lives in `skills/design-md-generator/`. Clone the repo once:
 
 ```bash
 git clone https://github.com/Vann4799/design-md-generator.git /tmp/dmdgen
+```
 
-# Qoder CLI / Claude Code
-cp -r /tmp/dmdgen/skills/design-md-generator ~/.agents/skills/   # or ~/.claude/skills/
+Then copy that folder into whichever skills directory your agent reads. `~` is
+`%USERPROFILE%` on Windows.
 
-# Codex / OpenCode
+### Claude Code
+
+```bash
+cp -r /tmp/dmdgen/skills/design-md-generator ~/.claude/skills/
+```
+
+### Codex / OpenCode
+
+```bash
 cp -r /tmp/dmdgen/skills/design-md-generator ~/.codex/skills/
+```
 
-# Hermes Agent
+### Hermes Agent
+
+```bash
 hermes skills add /tmp/dmdgen/skills/design-md-generator
+```
+
+### Qoder CLI
+
+```bash
+cp -r /tmp/dmdgen/skills/design-md-generator ~/.agents/skills/
 ```
 
 Restart the session (or reload skills) so the new skill is discovered.
