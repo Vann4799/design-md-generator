@@ -8,7 +8,7 @@ agent's default taste without the user knowing it.
 
 | Path | When | What the agent does |
 |------|------|---------------------|
-| **A. User answers** | no assets, no reference | 3 rounds below |
+| **A. User answers** | no assets, no reference | 4 rounds below |
 | **B. User points** | brand guide, logo, screenshot, live site, an existing app | extract, show the extraction, confirm |
 | **C. Agent proposes** | A and B both unavailable | propose minimal brief first (product, audience, mood), state the honest warning |
 
@@ -45,50 +45,66 @@ Show the draft and ask only about gaps.
    Kalem dan presisi, hangat dan santai, atau berani dan nyaris berisik?"
    Maps to ENERGY.
 3. **Reference** (free text) — "Ada contoh yang bikin lu bilang 'gitu'?"
-   A name is allowed ("Linear", "Stripe"); anchors are taste coordinates, not
-   things to copy. R-30 forbids cloning a product's identity.
-4. **Forbidden** — "Apa yang bikin lu langsung ilfeel sama tampilan?"
+   Then check it against the saturated list in `slop-tells.md` before writing
+   anything down. Naming a product is allowed (R-30 forbids *cloning* its
+   identity), but **Linear / Vercel / Stripe / Raycast / Notion / Figma / Apple
+   cannot be the only anchor**: a generator asked for those produces the average
+   of every AI imitation of them, which is the slop the user will complain
+   about afterwards. If the answer is one of those, say the mechanism out loud
+   in one sentence and ask 3b.
+4. **Counter-anchor** (only when 3 lands on a saturated name) — "Satu lagi,
+   tapi bukan software: majalah, signage, alat ukur, bangunan, buku, kemasan.
+   Yang bikin lu bilang 'ini bagus' di luar dunia dashboard." Pair it with 3 and
+   write both in `## System`. Then ask for the differentiator in one line:
+   "Apa yang keliatan dalam 3 detik yang nggak ada di dashboard AI biasa?"
+   That line goes verbatim into `## Design Read` and the validator requires it.
+5. **Forbidden** — "Apa yang bikin lu langsung ilfeel sama tampilan?"
    A negative is as informative as a positive, and it feeds Do's and Don'ts.
 
 ## Round 2 — Dials
 
 Ask each with its three levels spelled out; the answer must be 1, 2, or 3.
 
-5. **ENERGY** — how hard does it say hello?
+6. **ENERGY** — how hard does it say hello?
    1 calm and linear (GOV.UK) · 2 balanced (Stripe, Vercel) · 3 bold
    (Awwwards, agency portfolio)
-6. **RHYTHM** — how much do sections differ from each other?
+   The examples calibrate the level, they are not anchors — do not let a
+   dial-2 answer smuggle "make it like Vercel" back into `## System`.
+7. **RHYTHM** — how much do sections differ from each other?
    1 uniform grid · 2 consistent with a few breaks · 3 asymmetric, mixed
    compositions
-7. **MOTION** — how much movement, and why?
+8. **MOTION** — how much movement, and why?
    1 hover states only · 2 scroll-reveal and transitions · 3 parallax, pin,
    choreography
-8. **Dark mode** — ship both, ship one, or skip?
+9. **Dark mode** — ship both, ship one, or skip?
 
 If the project already has motion built (a GSAP scrub, a Lenis scroll), do not
 ask MOTION cold — read it and confirm the number it implies.
 
 ## Round 3 — Material
 
-9. **Palette origin** — brand colour exists? If yes, take it and derive paper and
-   ink around it. If not: "terang atau gelap dulu, dan accent-nya hue apa?"
-   One accent, not a rainbow.
-10. **Display face** — a serif, a grotesque, a mono, something quirky? Budget:
+10. **Palette origin** — brand colour exists? If yes, take it and derive paper and
+    ink around it. If not: "terang atau gelap dulu, dan accent-nya hue apa?"
+    One accent, not a rainbow. If the answer lands on near-black canvas plus one
+    neon accent, or gray canvas plus chartreuse, name it: those are the two
+    default generated skins (`slop-tells.md`), fine to keep, but the
+    differentiator line has to say what else is going on.
+11. **Display face** — a serif, a grotesque, a mono, something quirky? Budget:
     how many font files may load (a real constraint on slow connections).
-11. **Body face** — readable at small size; if the answer is "Inter", ask what
+12. **Body face** — readable at small size; if the answer is "Inter", ask what
     makes the page belong to this product instead of every other page.
-12. **Density** — compact professional (tight spacing, small radii, hairline
+13. **Density** — compact professional (tight spacing, small radii, hairline
     rules) or generous editorial (large spacing, few dividers)?
 
 ## Round 4 — Stances
 
-13. **Components** — which of these exist, and how: card? pill/chip? outline
+14. **Components** — which of these exist, and how: card? pill/chip? outline
     button? hairline table? Answering "no cards" is a valid and useful system.
-14. **Radius** — one number for everything, or a small scale?
-15. **Motion stance** — silent, 1-2 reveal primitives, or full choreography?
+15. **Radius** — one number for everything, or a small scale?
+16. **Motion stance** — silent, 1-2 reveal primitives, or full choreography?
     Always ask the reduced-motion fallback (≤150 ms opacity crossfade is the
     default).
-16. **CTA voice** — filled button, text link, or bordered pill? Primary and
+17. **CTA voice** — filled button, text link, or bordered pill? Primary and
     secondary must differ by more than hue.
 
 Round 5 is optional and conditional: **imagery** (photo, illustration, or none —
@@ -102,4 +118,8 @@ higher bar is needed).
 - Paper, ink, and one accent exist as `oklch()` values.
 - Display and body faces are named, with a load budget.
 - Every token group has a one-line reason for the user to react to.
+- `## Design Read` carries a **Differentiator** line: one sentence naming what
+  a viewer sees in three seconds that a generated default would not.
+- If any anchor is a saturated name (`slop-tells.md`), a counter-anchor from
+  outside software is recorded beside it. "Clean and modern" is not a direction.
 - The user has seen and confirmed the picks, then load `schema.md`.

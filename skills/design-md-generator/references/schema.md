@@ -14,8 +14,8 @@ Every `##` below is required, in this order. Duplicate headings fail.
 |---------|--------------|
 | frontmatter (opt) | `version`, `name`, `dials` |
 | `# Design — <Project>` | one line: the file is the rule |
-| `## System` | kind + audience, genre, axes, dark-mode stance |
-| `## Design Read` | the one-line read, the `Dial:` line, `Status:` |
+| `## System` | kind + audience, genre, axes, `Anchor ·` reference + counter-anchor, dark-mode stance |
+| `## Design Read` | the one-line read, `Differentiator ·`, the `Dial:` line, `Status:` |
 | `## Tokens` | one fenced `css` `:root` block — source of truth |
 | `## Type` | display, body, mono, each with where it is used and a file budget |
 | `## Layout` | grid, spacing scale, content max width |
@@ -31,6 +31,19 @@ Every `##` below is required, in this order. Duplicate headings fail.
 section to the last. Anti-slop agents read this line; if it is absent they fall
 back to guessing, which is how a locked system drifts. `Status:` is either
 `locked` or `draft without direction`, and a draft must carry dials `1 / 1 / 1`.
+
+## The Anchor and the Differentiator
+
+`- Anchor · <reference> · counter-anchor · <non-software reference>` and
+`Differentiator · <one sentence>` are required, because they are the only lines
+in the file that carry *intent* rather than values. Contrast passing and
+sections present describe a competent system; these two say why this one is not
+the model's default.
+
+The validator fails a missing `Differentiator` line, and warns when the sentence
+is adjective soup ("clean, modern, minimal, premium") or when every named anchor
+is saturated while the counter-anchor is empty. See `slop-tells.md`
+§ The saturated anchor.
 
 ## Tokens
 

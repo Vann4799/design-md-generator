@@ -12,6 +12,40 @@ output. So the tell is only half the job: the other half is adding energy on
 purpose. A DESIGN.md that bans twelve things and sets no dials produces
 sterile pages, which read as AI-generated just as loudly as a purple gradient.
 
+## The saturated anchor — the tell the bans cannot catch
+
+Every hard gate above can be obeyed perfectly and the page still reads as
+generated. That is a **saturated anchor**: a reference so widely imitated by
+generative tools that asking for it produces the *average of the imitations*,
+not the reference. The generator cannot see Linear; it sees ten thousand AI
+attempts at Linear and regresses to their mean.
+
+Saturated right now: **Linear, Vercel, Stripe, Raycast, Notion, Figma, Apple**
+— and anything described as "clean modern SaaS dashboard", "premium dark UI",
+or "minimalist portfolio". A `## System` genre line that names one of these is
+the bug, even when it adds "not a cliché" to the same sentence.
+
+The two skins this produces, both observed in real output:
+
+| Skin | Signature |
+|------|-----------|
+| **dark console** | near-black blue canvas, one high-chroma mint/cyan/lime accent, mono uppercase micro-labels as fake HUD, a ✓ or • repeated on every chip, four widgets rendering the same number |
+| **soft light console** | gray canvas, white cards at 16-24px radius, chartreuse accent, `backdrop-filter` glass, faint radial tint blooms in two corners |
+
+Neither is forbidden. Both need a written answer to *"what will a viewer see in
+three seconds that a generated default would not have?"* — because if the
+answer is "nothing, it's just clean", the direction was the mean all along.
+
+Two rules follow:
+
+- **Counter-anchor.** Every saturated anchor must be paired with one reference
+  from outside the software pool — print, signage, an instrument, a building, a
+  book, a product with a physical body. That is what pulls the output off the
+  mean; "not Linear" does not.
+- **Differentiator line.** `## Design Read` carries it verbatim, and the
+  validator fails the file without it. Adjective soup does not count: "clean,
+  modern, premium, minimal" restates the anchor instead of escaping it.
+
 ## Hard gate — never, no stated purpose redeems it
 
 | Tell | Why it fails |
@@ -36,6 +70,9 @@ the conservative column.
 | Cards | each is a repeatable object with its own data | avoid card-in-card | hairline rules + whitespace |
 | Big rounded radius + soft shadow | playful genre, stated in `## System` | one radius scale | small radius |
 | Eyebrow label above a heading | it names a real category | not on every section | none |
+| Mono uppercase micro-label | it marks a real machine state (sync, build, log) | not as section decoration on every panel | sentence case |
+| Status glyph (✓, •, a tick per row) | one item genuinely differs from the rest | never repeated on every chip | no glyph |
+| Score / metric rendered twice | the second form answers a different question | one widget per metric | the number alone |
 | Icon-tile feature row | icons come from one set and carry meaning | no decorative tiles | numbered or plain |
 | Emoji as an icon | never as a feature icon | — | none |
 | Italic / gradient headline | one deliberate editorial voice | one per page | plain |

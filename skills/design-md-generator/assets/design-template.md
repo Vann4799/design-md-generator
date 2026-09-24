@@ -16,13 +16,21 @@ intentionally — the file is the rule, not a note.
 - Kind · <landing page | web app | docs | portfolio> for <audience>
 - Genre · <editorial | modern-minimal | atmospheric | playful>
 - Axes · <paper band> / <display style> / <accent hue>
+- Anchor · <named reference> · counter-anchor · <one reference from outside software: print, signage, an instrument, a building, packaging>
 - Dark mode · <both | light only | dark only>
 
 <!-- State the picks out loud to the user before writing them down. The axes
-     line is the diversification lock: invert all three once chosen. -->
+     line is the diversification lock: invert all three once chosen.
+
+     The counter-anchor is not decoration. A generator asked for "Linear" or
+     "Vercel" produces the average of every AI imitation of them, which is the
+     slop the user will complain about next week. One reference from outside
+     the software pool is what pulls the output off that mean. -->
 
 ## Design Read
 > Reading this as: `<page kind>` for `<audience>`, in a `<visual language>`, dial `<E/R/M>`.
+
+Differentiator · <one sentence: what a viewer sees within three seconds that a generated default would not have>
 
 Dial: ENERGY <1-3> / RHYTHM <1-3> / MOTION <1-3>
 Status: locked

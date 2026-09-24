@@ -6,12 +6,13 @@ description: >-
   to obey. Use when a project has no design direction and an agent is about to
   build UI (without it the output is a "draft without direction", not a
   deliverable); when the user says "buat DESIGN.md", "kunci design system-nya",
-  "biar UI-nya nggak AI slop / nggak monoton", "extract the design tokens", or
-  hands over a brand guide, logo, screenshot, or reference site to turn into a
-  system; when design tokens need exporting to tokens.css, Tailwind v4 @theme,
-  DTCG tokens.json, or shadcn/ui variables. Complements a PRD: the PRD fixes
-  what to build, DESIGN.md fixes how it looks.
-version: 0.1.0
+  "biar UI-nya nggak AI slop / nggak monoton", "masih keliatan AI-generated /
+  generik", "extract the design tokens", or hands over a brand guide, logo,
+  screenshot, or reference site to turn into a system; when design tokens need
+  exporting to tokens.css, Tailwind v4 @theme, DTCG tokens.json, or shadcn/ui
+  variables. Complements a PRD: the PRD fixes what to build, DESIGN.md fixes
+  how it looks.
+version: 0.2.0
 author: Vann4799
 license: MIT
 platforms: [linux, macos, windows]
@@ -47,8 +48,9 @@ cannot express taste.
 Register the six phases in the host tracker (`TaskCreate`/`TaskUpdate`,
 `TodoWrite`, or a chat checklist) before starting. Exit conditions: 0 existing
 direction known · 1 every dial and token chosen by the user or by a source they
-approved · 2 file written · 3 `validate_design.mjs` PASS · 4 exports wired or
-declined · 5 user confirmed the system is settled.
+approved, and a written differentiator exists · 2 file written · 3
+`validate_design.mjs` PASS · 4 exports wired or declined · 5 user confirmed the
+system is settled.
 
 ## Procedure
 
@@ -74,12 +76,24 @@ Check before asking anything:
 
 Load `references/interview.md`. Three paths, user picks one:
 
-1. **They answer** — 3 rounds of at most 4 questions.
+1. **They answer** — 4 rounds, at most 4 questions each.
 2. **They point** — brand guide, logo, screenshot, or a site they admire →
    extract palette, type, spacing rhythm, and motion from it and show the
    extraction for confirmation. Never present estimated values as measured.
 3. **You propose** — only after 1 and 2 are unavailable, and state plainly that
    agent-chosen taste is the default the anti-slop rules exist to filter.
+
+Then run the **anchor check**, which is what this phase is actually for. A
+reference the user admires may be *saturated* — imitated so many times by
+generative tools that asking for it returns the average of the imitations, not
+the reference (Linear, Vercel, Stripe, Raycast; also "dark console with one
+neon accent" and "gray canvas, white rounded cards, lime accent", the two
+current default skins). Say the mechanism out loud in one sentence, ask for one
+counter-anchor from outside software, and write the answer as
+`- Anchor · … · counter-anchor · …` plus
+`Differentiator · …` before anything gets locked. Obeying every ban perfectly
+is still slop if the direction is the mean — this is the failure the rest of
+the file cannot catch.
 
 Refusing to produce a locked system without direction is correct behaviour. If
 the user genuinely skips it, write the file anyway but mark it
@@ -90,9 +104,9 @@ and say the resulting UI is not shippable.
 
 Copy `assets/design-template.md` to the project root, fill every placeholder,
 and delete its HTML writer-notes; a filled file lands near 100 lines (a system,
-not a wiki). Include the `Dial:` line, the canonical `:root` token block
-in `oklch()`, and a `## Decisions` reason for every token group. Section order
-and required keys are in `references/schema.md`.
+not a wiki). Include the `Dial:` line, the `Anchor` and `Differentiator` lines,
+the canonical `:root` token block in `oklch()`, and a `## Decisions` reason for
+every token group. Section order and required keys are in `references/schema.md`.
 
 ### 3. Validate
 
@@ -103,7 +117,11 @@ node scripts/validate_design.mjs <path-to-DESIGN.md>
 Deterministic gates: dials set to 1-3, required sections present and non-empty,
 no duplicate headings, no leftover placeholders, every decision reason present,
 token syntax parseable, and **ink/paper, accent/label, and focus pairs measured
-against WCAG 2.1 contrast** — computed, not eyeballed. Clear every `FAIL`.
+against WCAG 2.1 contrast** — computed, not eyeballed. Plus the direction
+gates: a `Differentiator` line must exist and carry a real sentence, a
+saturated anchor without a counter-anchor warns, and a palette that resolves to
+one of the default generated skins warns. Clear every `FAIL`; answer the
+warnings or record why not.
 
 ### 4. Export and wire
 
@@ -126,9 +144,17 @@ this system, and a page that genuinely needs something different gets a
 `## Variants` entry in this file rather than a local override. Re-run the skill
 as `amend` when the system evolves.
 
+Say what the file does *not* do: it constrains a builder that reads it. A
+mockup generator (Stitch, v0, Lovable's design pass) treats the same file as
+inspiration — it has no token contract to violate, so it renders its own prior
+and the mockup quietly becomes the source of truth when someone re-implements
+it. Use those tools for exploration, never as the executor of a locked system,
+and never feed one the whole file expecting obedience: send `tokens.css` plus
+the `Do's and Don'ts` lines.
+
 ## Anti-Slop Hand-off
 
-Load `references/slop-tells.md` before writing. Two rules that outlive the file:
+Load `references/slop-tells.md` before writing. Three rules that outlive the file:
 
 - A user choice that collides with a named slop tell is neither followed
   silently nor overridden silently — name the element, name the tell, ask
@@ -136,6 +162,9 @@ Load `references/slop-tells.md` before writing. Two rules that outlive the file:
   slop; only ask about named patterns.
 - Once `DESIGN.md` exists, the diversification rule inverts: pages differ from
   each other *within* the system, not in the system itself.
+- A locked system with a mean direction is still a mean direction. The
+  `Differentiator` line is where the owner commits to what makes it not the
+  default; if it cannot be written, the direction is not finished.
 
 ## Pitfalls
 
@@ -144,14 +173,16 @@ Load `references/slop-tells.md` before writing. Two rules that outlive the file:
 - Don't hand-edit exports, and don't hand a user a file the validator rejects.
 - Don't treat bans as the deliverable — liveliness is added on purpose via
   dials and levers, not by removing things.
+- Don't accept "clean, modern, minimal" as a direction; it names nothing and
+  every generator reads it as its own default.
 
 ## Resources
 
-- `references/interview.md` — 3 direction paths, 3 rounds, pre-fill sources
+- `references/interview.md` — 3 direction paths, 4 rounds, anchor check, pre-fill sources
 - `references/schema.md` — normative DESIGN.md format, section order, amend policy
-- `references/slop-tells.md` — tells to decide on, dose caps, keep/drop protocol
+- `references/slop-tells.md` — tells to decide on, the saturated anchor, dose caps, keep/drop protocol
 - `references/export.md` — export targets and the source-of-truth rule
 - `assets/design-template.md` — the fill-in file
-- `scripts/lib.mjs` — parser + WCAG contrast math (oklch, hex, rgb)
+- `scripts/lib.mjs` — parser + WCAG contrast math (oklch, hex, rgb) + direction gates
 - `scripts/validate_design.mjs` — deterministic gates
 - `scripts/export_design.mjs` — DESIGN.md → 4 token formats

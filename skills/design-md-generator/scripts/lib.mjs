@@ -36,6 +36,24 @@ const REQUIRED_TOKENS = [
 
 const DECISION_KEYS = ['color', 'type', 'layout', 'spacing', 'radius', 'motion', 'accent']
 
+/**
+ * References so widely imitated by generative tools that naming one produces
+ * the average of the imitations, not the reference. A warning, never a ban:
+ * the fix is a counter-anchor, not a different taste.
+ */
+const SATURATED = [
+  'linear', 'vercel', 'stripe', 'raycast', 'notion', 'figma', 'apple',
+  'shadcn', 'tailwind ui', 'dribbble', 'behance', 'awwwards',
+]
+
+/** L/C/H read back out of an oklch() string; null for hex or rgb(). */
+function oklchParts(value) {
+  if (typeof value !== 'string') return null
+  const m = value.trim().match(/^oklch\(\s*([\d.]+)(%?)\s+([\d.]+)\s+([\d.]+)/i)
+  if (!m) return null
+  return { L: Number(m[1]) * (m[2] ? 0.01 : 1), C: Number(m[3]), H: Number(m[4]) }
+}
+
 const firstFamily = (stack) => (stack.match(/["']([^"']+)["']/) ?? [, stack.split(',')[0]])?.[1]?.trim() ?? ''
 
 export function readDesign(file) {
@@ -213,8 +231,8 @@ export function validate(d) {
       fails.push('a draft without direction must declare ENERGY 1 / RHYTHM 1 / MOTION 1')
   }
   if (!d.status) fails.push('no `Status:` line — locked or draft without direction')
-  else if (!/^(locked|draft without direction)$/i.test(d.status))
-    warns.push(`unrecognised Status "${d.status}"`)
+  else if (!/^(locked|draft without direction)\b/i.test(d.status))
+    warns.push(`unrecognised Status "${d.status}" — start the line with "locked" or "draft without direction", notes after that are fine`)
 
   if (d.front.dials && d.dial) {
     const norm = (s) => s.replace(/\s+/g, ' ').toUpperCase()
@@ -281,6 +299,52 @@ export function validate(d) {
     warns.push(`display and body resolve to "${disp}" — the "Inter-everywhere" tell; name what carries the voice`)
 
   if (d.lines.length > 120) warns.push(`${d.lines.length} lines — a filled template lands near 100; past 120 this is a wiki, not a system`)
+
+  /* ---- direction gates: what the contrast maths cannot catch ---- */
+
+  const secText = (name) => (d.sections.get(name)?.body ?? []).join('\n')
+  const dirText = `${secText('System')}\n${secText('Design Read')}`
+
+  const diff = dirText.match(/^\s*(?:[-*]\s*)?Differentiator\s*[·:—-]\s*(.+)$/im)
+  if (!diff)
+    fails.push(
+      'no `Differentiator ·` line in ## Design Read — the file locks values but never states what makes it not the model default',
+    )
+  else {
+    const said = diff[1].trim()
+    if (said.length < 24)
+      fails.push(`Differentiator is too thin to steer anything ("${said}") — one concrete sentence about what a viewer sees`)
+    else {
+      const soup = [...new Set((said.match(/\b(clean|modern|minimal|premium|sleek|elegant|beautiful|professional)\b/gi) ?? []).map((w) => w.toLowerCase()))]
+      if (soup.length >= 2)
+        warns.push(`Differentiator is adjective soup (${soup.join(', ')}) — it restates the anchor instead of escaping it`)
+    }
+  }
+
+  const hits = SATURATED.filter((n) =>
+    new RegExp(`\\b${n.replace(/[^\w]/g, '\\W')}\\b`, 'i').test(dirText),
+  )
+  if (hits.length) {
+    const counter = dirText.match(/counter-anchor\s*[·:—-]\s*(\S.*)$/im)?.[1]?.trim()
+    if (!counter)
+      warns.push(
+        `anchor names ${hits.join(', ')} — saturated, so a generator returns the average imitation of it; add \`counter-anchor ·\` with one reference from outside software`,
+      )
+  }
+
+  const pk = oklchParts(d.tokens['color-paper'])
+  const ak = oklchParts(d.tokens['color-accent'])
+  if (pk && ak && ak.C >= 0.1) {
+    if (pk.L <= 0.3)
+      warns.push('dark canvas + high-chroma accent — the generated "console" skin; keep it only if the Differentiator says what else is there')
+    else if (pk.L >= 0.9 && ak.H >= 85 && ak.H <= 145)
+      warns.push('light gray canvas + chartreuse/lime accent — the current twin of that skin; same condition')
+    if (ak.H >= 265 && ak.H <= 330)
+      warns.push('violet/purple accent — the most generated hue in the corpus, and a hard gate in slop-tells.md when it rides a gradient')
+  }
+
+  if (d.dial && +d.dial[1] <= 1 && +d.dial[2] <= 1 && !/draft without direction/i.test(d.status))
+    warns.push('ENERGY 1 with RHYTHM 1 on a locked file — the quietest setting on both axes is what "monoton" means; raise one unless the calm is the point')
 
   return { fails, warns, measured }
 }

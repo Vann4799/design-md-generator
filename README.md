@@ -67,9 +67,13 @@ The agent then:
 2. Checks what already exists — a `DESIGN.md` it must never overwrite, a
    `tokens.css` or `tailwind.config.*` whose values it should keep, a PRD whose
    audience sets the dials.
-3. Gets direction one of three ways: you answer three rounds of at most four
+3. Gets direction one of three ways: you answer four rounds of at most four
    questions, you hand it a brand guide or a reference site to extract from, or —
-   only if you refuse both — it proposes and says so plainly.
+   only if you refuse both — it proposes and says so plainly. Then it runs the
+   anchor check: a reference that is already everywhere (Linear, Vercel, "dark
+   console with one neon accent") gets named as such and paired with a
+   counter-anchor from outside software, because that is what pulls the output
+   off the model's mean.
 4. Writes `DESIGN.md` from the template and runs the validator until every `FAIL`
    is gone.
 5. Exports tokens and proposes the smallest real integration, so the file has
@@ -107,6 +111,8 @@ truth and ten fixed sections:
 
 ~~~~markdown
 ## Design Read
+Differentiator · rules and a hanging number column instead of cards, so a page
+of prose still scans like a manual
 Dial: ENERGY 2 / RHYTHM 3 / MOTION 2
 Status: locked
 
@@ -125,6 +131,28 @@ how varied the layout, `MOTION` how much moves. Same file, three numbers,
 different output. Optional YAML frontmatter mirrors it so other tooling can read
 the file without parsing prose.
 
+## The anchor problem
+
+Every gate in this skill can pass and the page can still read as generated,
+because slop is not only a list of banned techniques — it is also a *direction*
+that too many people asked for. **Linear, Vercel, Stripe and Raycast are
+imitated so heavily that a generator returns the average of the imitations, not
+the reference**, and the two skins that average produced are now the default
+output: near-black canvas with one neon accent and mono HUD labels, or a grey
+canvas with white rounded cards, a lime accent and glass.
+
+So the file requires two lines that carry intent rather than values:
+`- Anchor · … · counter-anchor · …` and `Differentiator · …`. The validator fails
+a missing or empty differentiator and warns when the anchor is saturated with no
+counter-anchor, when the palette resolves to one of the two default skins, or
+when `ENERGY 1` and `RHYTHM 1` together describe a system nobody asked to be
+quiet.
+
+Related, and the reason this exists at all: `DESIGN.md` constrains a builder that
+reads it. A mockup generator treats the same file as inspiration — it has no
+token contract to violate — so send it `tokens.css` plus the Do/Don't lines and
+keep the mockup out of the source-of-truth chain.
+
 ## Scripts
 
 Both are dependency-free Node (≥18) and run on any DESIGN.md file.
@@ -136,10 +164,11 @@ node scripts/export_design.mjs DESIGN.md --format all --out src/styles/
 
 The validator checks the ten required sections and their order, the dials against
 the frontmatter, leftover placeholders and writer notes, a written reason for
-each of the seven decision groups, and **measures ink/paper, secondary text,
-accent label, and focus contrast against WCAG 2.1** — converting OKLCH through
-OKLab to linear-light sRGB, compositing alpha the way a browser paints it. It
-exits non-zero on any `FAIL`, so it drops into CI or a pre-commit hook.
+each of the seven decision groups, the differentiator and anchor lines, and
+**measures ink/paper, secondary text, accent label, and focus contrast against
+WCAG 2.1** — converting OKLCH through OKLab to linear-light sRGB, compositing
+alpha the way a browser paints it. It exits non-zero on any `FAIL`, so it drops
+into CI or a pre-commit hook.
 
 The exporter writes `tokens.css`, a Tailwind v4 `@theme` block, DTCG
 `tokens.json`, and shadcn/ui CSS variables. It refuses to run on a file that
