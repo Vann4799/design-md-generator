@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <title>Relay · Pipeline — DESIGN.md only, no anti-slop pass</title>
+<style>
+  /* Build C: the DESIGN.md tokens are wired in and obeyed for colour and type,
+     but nothing enforced the layout rules or the accent budget. The model keeps
+     its own habits: card grid everywhere, a second hue sneaked in as a tag,
+     reveal motion on rows that are just a table. */
+  * { box-sizing: border-box; margin: 0 }
+  :root {
+    --color-paper: oklch(0.98 0.004 250);
+    --color-paper-2: oklch(0.95 0.006 250);
+    --color-ink: oklch(0.26 0.012 250);
+    --color-ink-2: oklch(0.48 0.014 250);
+    --color-rule: oklch(0.26 0.012 250 / 0.12);
+    --color-accent: oklch(0.42 0.07 155);
+    --color-accent-ink: oklch(0.98 0.004 250);
+    --font-display: "Spectral", Georgia, serif;
+    --font-body: "Inter", system-ui, sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+    --radius-card: 2px;
+  }
+  body { background: var(--color-paper); color: var(--color-ink); font: 14px/1.55 var(--font-body); min-height: 100vh }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 34px 24px 64px }
+  header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 30px }
+  h1 { font: 400 30px/1.15 var(--font-display); letter-spacing: -0.01em }
+  .sub { color: var(--color-ink-2); font-size: 13px; margin-top: 4px }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 24px }
+  .card { background: var(--color-paper-2); border: 1px solid var(--color-rule); border-radius: var(--radius-card); padding: 18px; animation: rise 320ms ease both }
+  .card .label { color: var(--color-ink-2); font-size: 12px; font-family: var(--font-mono) }
+  .card .num { font: 400 30px/1 var(--font-display); margin-top: 10px }
+  .delta { font-size: 12px; color: oklch(0.55 0.13 45); margin-top: 6px }
+  .panel { border: 1px solid var(--color-rule); border-radius: var(--radius-card); background: var(--color-paper-2); overflow: hidden }
+  .panel h2 { padding: 16px 18px; border-bottom: 1px solid var(--color-rule); font: 400 19px/1.2 var(--font-display); display: flex; justify-content: space-between }
+  .row { display: grid; grid-template-columns: 1.6fr 1fr 1fr auto; gap: 16px; align-items: center; padding: 14px 18px; border-bottom: 1px solid var(--color-rule); animation: rise 320ms ease both }
+  .row:nth-child(2) { animation-delay: 40ms } .row:nth-child(3) { animation-delay: 80ms }
+  .row:nth-child(4) { animation-delay: 120ms } .row:nth-child(5) { animation-delay: 160ms }
+  .who { font-weight: 600 }
+  .meta { color: var(--color-ink-2); font-size: 13px }
+  .tag { padding: 3px 10px; border-radius: 999px; background: oklch(0.93 0.03 300); color: oklch(0.42 0.11 300); font: 500 12px var(--font-mono) }
+  .cta { background: var(--color-accent); color: var(--color-accent-ink); border: 0; border-radius: 2px; padding: 10px 16px; font-weight: 600 }
+  .ghost { background: transparent; border: 1px solid var(--color-rule); color: var(--color-ink); border-radius: 2px; padding: 9px 14px; font-size: 13px }
+  footer { margin-top: 22px; display: flex; justify-content: space-between; color: var(--color-ink-2); font-size: 12px }
+  @keyframes rise { from { opacity: 0; transform: translateY(8px) } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Hiring pipeline</h1>
+      <div class="sub">Relay · updated 4 minutes ago</div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="ghost">Export</button>
+      <button class="cta">Add candidate</button>
+    </div>
+  </header>
+
+  <div class="grid">
+    <div class="card"><div class="label">IN FLIGHT</div><div class="num">42</div><div class="delta">+6 this week</div></div>
+    <div class="card"><div class="label">OFFER RATE</div><div class="num">31%</div><div class="delta">+3 pts vs last month</div></div>
+    <div class="card"><div class="label">TIME TO HIRE</div><div class="num">18d</div><div class="delta">-2 days</div></div>
+  </div>
+
+  <div class="panel">
+    <h2><span>Open roles</span><span class="tag">5 ACTIVE</span></h2>
+    <div class="row"><div><div class="who">Ayu Lestari</div><div class="meta">Senior backend · referred</div></div><div><span class="tag">TECHNICAL</span></div><div class="meta">3 days</div><button class="ghost">Advance</button></div>
+    <div class="row"><div><div class="who">Bagas Prasetyo</div><div class="meta">Data engineer · inbound</div></div><div><span class="tag">SCREEN</span></div><div class="meta">1 day</div><button class="ghost">Advance</button></div>
+    <div class="row"><div><div class="who">Citra Halim</div><div class="meta">Product designer · sourced</div></div><div><span class="tag">OFFER</span></div><div class="meta">6 days</div><button class="ghost">Advance</button></div>
+    <div class="row"><div><div class="who">Dimas Nugroho</div><div class="meta">iOS engineer · referral</div></div><div><span class="tag">TECHNICAL</span></div><div class="meta">2 days</div><button class="ghost">Advance</button></div>
+    <div class="row"><div><div class="who">Elena Wijaya</div><div class="meta">Platform lead · inbound</div></div><div><span class="tag">SCREEN</span></div><div class="meta">4 days</div><button class="ghost">Advance</button></div>
+  </div>
+
+  <footer><span>© Relay</span><span>Synced 4 minutes ago</span></footer>
+</div>
+</body>
+</html>

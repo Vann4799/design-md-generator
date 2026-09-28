@@ -12,7 +12,7 @@ description: >-
   exporting to tokens.css, Tailwind v4 @theme, DTCG tokens.json, or shadcn/ui
   variables. Complements a PRD: the PRD fixes what to build, DESIGN.md fixes
   how it looks.
-version: 0.2.0
+version: 0.3.0
 author: Vann4799
 license: MIT
 platforms: [linux, macos, windows]
@@ -119,7 +119,8 @@ no duplicate headings, no leftover placeholders, every decision reason present,
 token syntax parseable, and **ink/paper, accent/label, and focus pairs measured
 against WCAG 2.1 contrast** — computed, not eyeballed. Plus the direction
 gates: a `Differentiator` line must exist and carry a real sentence, a
-saturated anchor without a counter-anchor warns, and a palette that resolves to
+saturated anchor warns unless its counter-anchor names something from outside
+software, and a palette that resolves to
 one of the default generated skins warns. Clear every `FAIL`; answer the
 warnings or record why not.
 

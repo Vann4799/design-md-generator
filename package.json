@@ -1,0 +1,38 @@
+{
+  "name": "design-md-generator",
+  "version": "0.3.0",
+  "description": "Installer for the design-md-generator agent skill: write a locked DESIGN.md, validate it, export real token formats.",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "design-md-generator": "cli/index.mjs"
+  },
+  "files": [
+    "cli",
+    "skills",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node tests/run.mjs",
+    "validate": "node skills/design-md-generator/scripts/validate_design.mjs"
+  },
+  "keywords": [
+    "design-system",
+    "design-tokens",
+    "ai-slop",
+    "agent-skills",
+    "claude-code",
+    "codex",
+    "opencode",
+    "qoder",
+    "hermes"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vann4799/design-md-generator.git"
+  }
+}

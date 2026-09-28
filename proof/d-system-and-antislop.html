@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <title>Relay · Pipeline — DESIGN.md + anti-slop pass</title>
+<style>
+  /* Build D: same token file, and the rest of the system honoured — the
+     Differentiator ("rules and a hanging number column instead of cards"), the
+     one-column 72ch measure, one accent hue, no card chrome, no reveal on a table.
+     This is the version that reads as chosen rather than generated. */
+  * { box-sizing: border-box; margin: 0 }
+  :root {
+    --color-paper: oklch(0.98 0.004 250);
+    --color-paper-2: oklch(0.95 0.006 250);
+    --color-ink: oklch(0.26 0.012 250);
+    --color-ink-2: oklch(0.48 0.014 250);
+    --color-rule: oklch(0.26 0.012 250 / 0.12);
+    --color-accent: oklch(0.42 0.07 155);
+    --color-accent-ink: oklch(0.98 0.004 250);
+    --font-display: "Spectral", "Iowan Old Style", Georgia, serif;
+    --font-body: "Inter", system-ui, sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+    --space-m: 16px; --space-l: 40px;
+  }
+  body {
+    background: var(--color-paper); color: var(--color-ink);
+    font: 15px/1.6 var(--font-body); min-height: 100vh;
+    padding: var(--space-l) 24px 72px;
+  }
+  .measure { max-width: 72ch; margin: 0 auto }
+  header { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; padding-bottom: var(--space-m); border-bottom: 1px solid var(--color-rule) }
+  h1 { font: 400 34px/1.1 var(--font-display); letter-spacing: -0.012em }
+  .sub { color: var(--color-ink-2); font-size: 13px; margin-top: 6px }
+  .controls { display: flex; gap: 10px; flex-shrink: 0 }
+  .cta { background: var(--color-accent); color: var(--color-accent-ink); border: 0; border-radius: 2px; padding: 10px 16px; font: 600 14px var(--font-body) }
+  .ghost { background: transparent; border: 1px solid var(--color-rule); color: var(--color-ink); border-radius: 2px; padding: 9px 14px; font-size: 13px }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin-top: var(--space-l); border-bottom: 1px solid var(--color-rule) }
+  .stat { padding: 0 20px 18px; border-right: 1px solid var(--color-rule) }
+  .stat:first-child { padding-left: 0 }
+  .stat:last-child { border-right: 0 }
+  .stat .num { font: 400 26px/1 var(--font-display) }
+  .stat .label { color: var(--color-ink-2); font-size: 13px; margin-top: 6px }
+  section.list { margin-top: var(--space-l) }
+  section.list > h2 { font: 400 22px/1.2 var(--font-display); margin-bottom: 6px }
+  section.list > p { color: var(--color-ink-2); font-size: 13px; margin-bottom: var(--space-m) }
+  .item { display: grid; grid-template-columns: 4ch 1fr auto; gap: 18px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid var(--color-rule) }
+  .item .n { font: 400 15px/1.7 var(--font-mono); color: var(--color-ink-2) }
+  .item .who { font-weight: 600 }
+  .item .meta { color: var(--color-ink-2); font-size: 13px }
+  .item .stage { text-align: right; font-size: 13px }
+  .item .stage em { font-style: normal; color: var(--color-accent); border-bottom: 1px solid var(--color-accent); padding-bottom: 1px }
+  .item .stage .days { display: block; color: var(--color-ink-2); font-size: 12px; margin-top: 2px }
+  footer { margin-top: var(--space-l); padding-top: var(--space-m); border-top: 1px solid var(--color-rule); display: flex; justify-content: space-between; color: var(--color-ink-2); font-size: 12px }
+  @media (max-width: 620px) { .stats { grid-template-columns: 1fr; gap: 18px } .stat { border: 0; padding-left: 0 } header { flex-direction: column; align-items: flex-start } }
+</style>
+</head>
+<body>
+<div class="measure">
+  <header>
+    <div>
+      <h1>Hiring pipeline</h1>
+      <div class="sub">Relay — 42 candidates in flight, updated 4 minutes ago</div>
+    </div>
+    <div class="controls">
+      <button class="ghost">Export</button>
+      <button class="cta">Add candidate</button>
+    </div>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><div class="num">42</div><div class="label">in flight, 6 more than last week</div></div>
+    <div class="stat"><div class="num">31%</div><div class="label">reach offer, up 3 points</div></div>
+    <div class="stat"><div class="num">18 d</div><div class="label">median from apply to offer</div></div>
+  </div>
+
+  <section class="list">
+    <h2>Five people moving this week</h2>
+    <p>Ordered by how long they have been where they are.</p>
+    <div class="item"><span class="n">01</span><span><span class="who">Citra Halim</span><br><span class="meta">Product designer · sourced</span></span><span class="stage"><em>Offer out</em><span class="days">6 days in stage</span></span></div>
+    <div class="item"><span class="n">02</span><span><span class="who">Ayu Lestari</span><br><span class="meta">Senior backend · referred</span></span><span class="stage"><em>Technical round</em><span class="days">3 days in stage</span></span></div>
+    <div class="item"><span class="n">03</span><span><span class="who">Elena Wijaya</span><br><span class="meta">Platform lead · inbound</span></span><span class="stage"><em>Screen</em><span class="days">4 days in stage</span></span></div>
+    <div class="item"><span class="n">04</span><span><span class="who">Dimas Nugroho</span><br><span class="meta">iOS engineer · referral</span></span><span class="stage"><em>Technical round</em><span class="days">2 days in stage</span></span></div>
+    <div class="item"><span class="n">05</span><span><span class="who">Bagas Prasetyo</span><br><span class="meta">Data engineer · inbound</span></span><span class="stage"><em>Screen</em><span class="days">1 day in stage</span></span></div>
+  </section>
+
+  <footer><span>© Relay</span><span>Synced 4 minutes ago</span></footer>
+</div>
+</body>
+</html>

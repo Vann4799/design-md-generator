@@ -1,4 +1,11 @@
+![DESIGN.md generator — before and after](proof/banner.png)
+
 # DESIGN.md Generator Skill
+
+[![test suite](https://github.com/Vann4799/design-md-generator/actions/workflows/ci.yml/badge.svg)](https://github.com/Vann4799/design-md-generator/actions/workflows/ci.yml)
+[![release](https://img.shields.io/github/v/release/Vann4799/design-md-generator)](https://github.com/Vann4799/design-md-generator/releases)
+[![node >= 18](https://img.shields.io/badge/node-%E2%89%A518-brightgreen)](package.json)
+[![license: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 Write the file that stops an agent from re-deciding the visual system on every
 page. Works with Claude Code, Codex, OpenCode, Hermes Agent, and Qoder CLI.
@@ -14,36 +21,75 @@ anti-slop rules leave you with a beige, card-less, gradient-free page that looks
 like every other safe output. This skill picks a direction on purpose, then
 keeps it.
 
+## Proof, not a claim
+
+One brief — a hiring pipeline screen — built four ways. Same content, same copy.
+
+![Four builds of the same brief](proof/before-after.png)
+
+| Build | Given | Result |
+|-------|-------|--------|
+| A | the brief, nothing else | near-black canvas, one neon accent, mono uppercase labels, a ✓ on every row, the same metric in four widgets |
+| B | A + anti-slop rules only | the tells are gone; the page is grey, rounded, card-perfect and belongs to nobody |
+| C | `DESIGN.md` tokens only | moss and a serif arrive, but the model keeps its own layout habits: card chrome, a second hue as a tag, staggered reveals on a table |
+| D | `DESIGN.md` + the anti-slop pass | the system's stated Differentiator is on screen: hairline rules, a hanging number column, one accent, no cards |
+
+Sources are in [`proof/`](proof) — open any file in a browser; D is the fixture
+system in [`tests/fixtures/good/DESIGN.md`](tests/fixtures/good/DESIGN.md).
+
+A and B are what the skill exists to prevent. C is why a token file alone is not
+a design system. D is the target.
+
 ## Install
 
-The skill lives in `skills/design-md-generator/`. Clone the repo once:
+### One command
+
+```bash
+npx github:Vann4799/design-md-generator --list   # see what it would touch
+npx github:Vann4799/design-md-generator          # install into detected agents
+```
+
+It copies `skills/design-md-generator/` into each agent's skills folder it finds
+(`~/.claude/skills`, `~/.codex/skills`, `~/.agents/skills`), refuses to overwrite
+without `--force`, and prints the `hermes skills add` command instead of guessing
+at Hermes. `--host claude,qoder` or `--dir <path>` narrow it down. No network, no
+dependencies.
+
+### Claude Code plugin
+
+```
+/plugin marketplace add Vann4799/design-md-generator
+/plugin install design-md-generator@vann4799-skills
+```
+
+### By hand
 
 ```bash
 git clone https://github.com/Vann4799/design-md-generator.git /tmp/dmdgen
 ```
 
-Then copy that folder into whichever skills directory your agent reads. `~` is
-`%USERPROFILE%` on Windows.
+Then copy `skills/design-md-generator/` into whichever skills directory your
+agent reads. `~` is `%USERPROFILE%` on Windows.
 
-### Claude Code
+#### Claude Code
 
 ```bash
 cp -r /tmp/dmdgen/skills/design-md-generator ~/.claude/skills/
 ```
 
-### Codex / OpenCode
+#### Codex / OpenCode
 
 ```bash
 cp -r /tmp/dmdgen/skills/design-md-generator ~/.codex/skills/
 ```
 
-### Hermes Agent
+#### Hermes Agent
 
 ```bash
 hermes skills add /tmp/dmdgen/skills/design-md-generator
 ```
 
-### Qoder CLI
+#### Qoder CLI
 
 ```bash
 cp -r /tmp/dmdgen/skills/design-md-generator ~/.agents/skills/
@@ -67,7 +113,7 @@ The agent then:
 2. Checks what already exists — a `DESIGN.md` it must never overwrite, a
    `tokens.css` or `tailwind.config.*` whose values it should keep, a PRD whose
    audience sets the dials.
-3. Gets direction one of three ways: you answer four rounds of at most four
+3. Gets direction one of three ways: you answer up to five rounds of at most four
    questions, you hand it a brand guide or a reference site to extract from, or —
    only if you refuse both — it proposes and says so plainly. Then it runs the
    anchor check: a reference that is already everywhere (Linear, Vercel, "dark
@@ -86,19 +132,25 @@ at dials `1 / 1 / 1`, and the agent tells you the result is not shippable.
 ## Layout
 
 ```
-skills/design-md-generator/
-├── SKILL.md                       workflow, tone, ask-user tool mapping
-├── references/
-│   ├── interview.md               three direction paths, question rounds, pre-fill table
-│   ├── schema.md                  normative DESIGN.md format, section order, amend policy
-│   ├── slop-tells.md              named tells to decide on, dose caps, keep/drop protocol
-│   └── export.md                  export targets and the source-of-truth rule
-├── assets/
-│   └── design-template.md         copy-and-fill DESIGN.md skeleton
-└── scripts/
-    ├── lib.mjs                    parser + WCAG contrast math (oklch, hex, rgb)
-    ├── validate_design.mjs        deterministic gates, exit 1 on any FAIL
-    └── export_design.mjs          DESIGN.md → tokens.css / @theme / DTCG / shadcn
+.
+├── cli/index.mjs                      npx installer: detect hosts, copy the skill
+├── tests/run.mjs                      45 checks: validator, exporter, shape, installer
+├── tests/fixtures/{good,bad}/         a passing DESIGN.md and one that must fail
+├── proof/                             the four builds above, HTML + screenshots
+├── .claude-plugin/                    plugin.json + marketplace.json
+├── .github/workflows/ci.yml           the suite on Node 18 / 20 / 22
+└── skills/design-md-generator/
+    ├── SKILL.md                       workflow, tone, ask-user tool mapping
+    ├── references/
+    │   ├── interview.md               three direction paths, question rounds, pre-fill table
+    │   ├── schema.md                  normative DESIGN.md format, section order, amend policy
+    │   ├── slop-tells.md              named tells to decide on, dose caps, keep/drop protocol
+    │   └── export.md                  export targets and the source-of-truth rule
+    ├── assets/design-template.md      copy-and-fill DESIGN.md skeleton
+    └── scripts/
+        ├── lib.mjs                    parser + WCAG contrast math (oklch, hex, rgb)
+        ├── validate_design.mjs        deterministic gates, exit 1 on any FAIL
+        └── export_design.mjs          DESIGN.md → tokens.css / @theme / DTCG / shadcn
 ```
 
 `references/` is loaded only for the phase that needs it, so the full anti-slop
@@ -110,6 +162,9 @@ table does not sit in the context window the entire session.
 truth and ten fixed sections:
 
 ~~~~markdown
+## System
+- Anchor · a 1952 Penguin Special · counter-anchor · the same, no software reference
+
 ## Design Read
 Differentiator · rules and a hanging number column instead of cards, so a page
 of prose still scans like a manual
@@ -143,15 +198,31 @@ canvas with white rounded cards, a lime accent and glass.
 
 So the file requires two lines that carry intent rather than values:
 `- Anchor · … · counter-anchor · …` and `Differentiator · …`. The validator fails
-a missing or empty differentiator and warns when the anchor is saturated with no
-counter-anchor, when the palette resolves to one of the two default skins, or
-when `ENERGY 1` and `RHYTHM 1` together describe a system nobody asked to be
-quiet.
+a missing or empty differentiator and warns when the anchor is saturated and the
+counter-anchor is missing or names another product, when the palette resolves to
+one of the two default skins, or when `ENERGY 1` and `RHYTHM 1` together describe
+a system nobody asked to be quiet.
 
 Related, and the reason this exists at all: `DESIGN.md` constrains a builder that
 reads it. A mockup generator treats the same file as inspiration — it has no
 token contract to violate — so send it `tokens.css` plus the Do/Don't lines and
 keep the mockup out of the source-of-truth chain.
+
+## Tests and CI
+
+```bash
+node tests/run.mjs      # 45 checks, no dependencies, exit 0 = green
+```
+
+The suite is the reason the README can say "deterministic" out loud. It asserts
+the good fixture passes with zero warnings; that the bad fixture exits 1 and
+names each failure (missing differentiator, leftover placeholder, absent decision
+reason, sub-4.5:1 ink, mixed colour formats, Inter-everywhere, saturated anchor);
+that the exporter writes all four targets, emits parseable DTCG, and refuses an
+invalid file; that the skill keeps its own conventions (frontmatter, description
+length, under 500 lines, no README inside the skill folder, every reference file
+linked from `SKILL.md`); and that the installer copies, refuses to clobber, and
+leaves behind a working validator. CI runs it on Node 18, 20 and 22.
 
 ## Scripts
 
@@ -185,6 +256,7 @@ Edit the files rather than the workflow:
 - `references/slop-tells.md` — the tells your team actually cares about, and the
   dose caps you will tolerate
 - `scripts/export_design.mjs` — new export targets
+- `cli/index.mjs` → `HOSTS` — another agent's skills directory
 
 ## Credit where it is due
 

@@ -325,10 +325,17 @@ export function validate(d) {
     new RegExp(`\\b${n.replace(/[^\w]/g, '\\W')}\\b`, 'i').test(dirText),
   )
   if (hits.length) {
-    const counter = dirText.match(/counter-anchor\s*[·:—-]\s*(\S.*)$/im)?.[1]?.trim()
+    const counter = dirText.match(/counter-anchor\s*[·:—-]\s*(\S.*)$/im)?.[1]?.trim() ?? ''
+    const named = SATURATED.filter((n) =>
+      new RegExp(`\\b${n.replace(/[^\w]/g, '\\W')}\\b`, 'i').test(counter),
+    )
     if (!counter)
       warns.push(
         `anchor names ${hits.join(', ')} — saturated, so a generator returns the average imitation of it; add \`counter-anchor ·\` with one reference from outside software`,
+      )
+    else if (named.length)
+      warns.push(
+        `anchor names ${hits.join(', ')} — and the counter-anchor names "${named.join(', ')}", another software reference; it has to come from print, signage, an instrument, a building, packaging`,
       )
   }
 

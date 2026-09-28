@@ -41,9 +41,10 @@ sections present describe a competent system; these two say why this one is not
 the model's default.
 
 The validator fails a missing `Differentiator` line, and warns when the sentence
-is adjective soup ("clean, modern, minimal, premium") or when every named anchor
-is saturated while the counter-anchor is empty. See `slop-tells.md`
-§ The saturated anchor.
+is adjective soup ("clean, modern, minimal, premium") or when a named anchor is
+saturated and the counter-anchor is empty — or names another product, which is
+the same average-of-imitations problem wearing a different label. See
+`slop-tells.md` § The saturated anchor.
 
 ## Tokens
 

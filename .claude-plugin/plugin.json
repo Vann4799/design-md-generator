@@ -1,0 +1,14 @@
+{
+  "name": "design-md-generator",
+  "description": "Lock a project's visual system in DESIGN.md before an agent builds UI — dials, oklch tokens, type, motion, decisions with reasons, WCAG-verified and exported to CSS, Tailwind v4, DTCG and shadcn.",
+  "version": "0.3.0",
+  "author": {
+    "name": "Vann4799",
+    "email": "129656771+Vann4799@users.noreply.github.com"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/Vann4799/design-md-generator",
+  "repository": "https://github.com/Vann4799/design-md-generator",
+  "keywords": ["design-system", "design-tokens", "ui", "anti-slop"],
+  "skills": ["./skills/"]
+}

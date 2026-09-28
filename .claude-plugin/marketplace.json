@@ -1,0 +1,23 @@
+{
+  "name": "vann4799-skills",
+  "owner": {
+    "name": "Vann4799",
+    "email": "129656771+Vann4799@users.noreply.github.com"
+  },
+  "metadata": {
+    "description": "Design and requirements skills for coding agents: lock the visual system in DESIGN.md, then the spec in PRD.md.",
+    "version": "0.3.0"
+  },
+  "plugins": [
+    {
+      "name": "design-md-generator",
+      "description": "Write or amend a project's DESIGN.md — the locked visual system every later UI build has to obey.",
+      "author": {
+        "name": "Vann4799",
+        "email": "129656771+Vann4799@users.noreply.github.com"
+      },
+      "category": "design",
+      "source": "./"
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Relay · Pipeline — no DESIGN.md, no anti-slop pass</title>
+<style>
+  /* Build A: what a model returns when asked for "a clean modern hiring
+     dashboard, Linear/Vercel vibes" and given nothing else. */
+  * { box-sizing: border-box; margin: 0 }
+  body {
+    background: #08090c;
+    color: #e8eef2;
+    font: 14px/1.5 Inter, system-ui, sans-serif;
+    min-height: 100vh;
+  }
+  body::before {
+    content: ""; position: fixed; inset: -20% auto auto -10%; width: 60vw; height: 60vw;
+    background: radial-gradient(circle, #10b98155, transparent 60%); filter: blur(80px);
+  }
+  body::after {
+    content: ""; position: fixed; right: -15%; bottom: -25%; width: 55vw; height: 55vw;
+    background: radial-gradient(circle, #7c5cff44, transparent 60%); filter: blur(90px);
+  }
+  .wrap { position: relative; max-width: 1120px; margin: 0 auto; padding: 28px 24px 64px }
+  header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px }
+  .brand { font-weight: 800; letter-spacing: -0.03em; font-size: 20px }
+  .brand span { background: linear-gradient(90deg, #34d399, #7c5cff); -webkit-background-clip: text; color: transparent }
+  .kicker { font: 600 10px/1 ui-monospace, monospace; letter-spacing: 0.22em; text-transform: uppercase; color: #34d399 }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px }
+  .card {
+    background: #0f1115cc; border: 1px solid #ffffff14; border-radius: 16px; padding: 18px;
+    backdrop-filter: blur(14px);
+  }
+  .card .label { font: 600 10px/1.4 ui-monospace, monospace; letter-spacing: 0.18em; text-transform: uppercase; color: #7d8794 }
+  .card .num { font-size: 30px; font-weight: 800; letter-spacing: -0.04em; margin-top: 10px }
+  .bar { height: 6px; border-radius: 999px; background: #ffffff12; margin-top: 12px; overflow: hidden }
+  .bar i { display: block; height: 100%; background: linear-gradient(90deg, #34d399, #7c5cff) }
+  .pill { display: inline-flex; gap: 6px; align-items: center; margin-top: 10px; padding: 4px 10px; border-radius: 999px; background: #34d3991a; color: #34d399; font-size: 11px; font-weight: 600 }
+  .panel { background: #0f1115cc; border: 1px solid #ffffff14; border-radius: 16px; backdrop-filter: blur(14px); overflow: hidden }
+  .panel h2 { padding: 16px 18px; border-bottom: 1px solid #ffffff10; font-size: 13px; letter-spacing: -0.01em; display: flex; justify-content: space-between }
+  .row { display: grid; grid-template-columns: 24px 1.4fr 1fr 1fr auto; gap: 14px; align-items: center; padding: 14px 18px; border-bottom: 1px solid #ffffff0a }
+  .row:last-child { border: 0 }
+  .tick { color: #34d399 }
+  .who { font-weight: 600 }
+  .sub { color: #7d8794; font-size: 12px }
+  .stage { font: 600 11px/1 ui-monospace, monospace; text-transform: uppercase; letter-spacing: 0.14em; color: #9aa6b2 }
+  .cta { background: linear-gradient(90deg, #34d399, #2bbf84); color: #05130d; border: 0; border-radius: 10px; padding: 10px 18px; font-weight: 700; letter-spacing: -0.01em }
+  .ghost { background: #ffffff0d; border: 1px solid #ffffff1a; color: #e8eef2; border-radius: 10px; padding: 10px 16px }
+  footer { margin-top: 22px; display: flex; justify-content: space-between; color: #7d8794; font-size: 12px }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <div class="kicker">Hiring OS · Live</div>
+      <div class="brand">Relay <span>Pipeline</span></div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="ghost">Export ✓</button>
+      <button class="cta">Add candidate</button>
+    </div>
+  </header>
+
+  <div class="grid">
+    <div class="card">
+      <div class="label">In flight</div>
+      <div class="num">42</div>
+      <div class="bar"><i style="width:62%"></i></div>
+    </div>
+    <div class="card">
+      <div class="label">Active · 42</div>
+      <div class="num">42</div>
+      <div class="pill">● 42 candidates</div>
+    </div>
+    <div class="card">
+      <div class="label">Offer rate</div>
+      <div class="num">31%</div>
+      <div class="bar"><i style="width:31%"></i></div>
+    </div>
+    <div class="card">
+      <div class="label">Time to hire</div>
+      <div class="num">18d</div>
+      <div class="pill">▲ on target</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2><span>Open pipeline</span><span class="stage">42 total</span></h2>
+    <div class="row"><span class="tick">✓</span><span><div class="who">Ayu Lestari</div><div class="sub">Senior backend · referred</div></span><span class="stage">✓ Technical</span><span class="sub">3 days</span><button class="ghost">Move →</button></div>
+    <div class="row"><span class="tick">✓</span><span><div class="who">Bagas Prasetyo</div><div class="sub">Data engineer · inbound</div></span><span class="stage">✓ Screen</span><span class="sub">1 day</span><button class="ghost">Move →</button></div>
+    <div class="row"><span class="tick">✓</span><span><div class="who">Citra Halim</div><div class="sub">Product designer · sourced</div></span><span class="stage">✓ Offer</span><span class="sub">6 days</span><button class="ghost">Move →</button></div>
+    <div class="row"><span class="tick">✓</span><span><div class="who">Dimas Nugroho</div><div class="sub">iOS engineer · referral</div></span><span class="stage">✓ Technical</span><span class="sub">2 days</span><button class="ghost">Move →</button></div>
+    <div class="row"><span class="tick">✓</span><span><div class="who">Elena Wijaya</div><div class="sub">Platform lead · inbound</div></span><span class="stage">✓ Screen</span><span class="sub">4 days</span><button class="ghost">Move →</button></div>
+  </div>
+
+  <footer><span>© Relay</span><span>STATUS: SYNCED ✓</span></footer>
+</div>
+</body>
+</html>
